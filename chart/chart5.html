@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Line Chart Example</title>
+    <script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+
+<body>
+    <!-- 起始時間輸入框 -->
+    <input type="time" placeholder="起始時間 (HH:mm)" id="start-time">
+    <!-- 結束時間輸入框 -->
+    <input type="time" placeholder="結束時間 (HH:mm)" id="end-time">
+    <input type="text" placeholder="輸入區間" id="cutInterval">
+    <!-- 新增按鈕 onchange="getTime()"-->
+    <button id="addRange">設定範圍</button>
+    <!-- 起始時間輸入框 -->
+    <input type="date" placeholder="選擇日期" id="getDate">
+
+    <button id="add-button">新增線條</button>
+    <!-- 清除按鈕 -->
+    <button id="clear-button">清除線條</button>
+    <!-- 圖表區域 -->
+    <canvas id="myChart" width="400" height="200"></canvas>
+
+    <script>
+
+        const addButton = document.getElementById('add-button');
+        const clearButton = document.getElementById('clear-button');
+        const startTimeInput = document.getElementById('start-time');
+        const endTimeInput = document.getElementById('end-time');
+        const canvas = document.getElementById('myChart').getContext('2d');
+        var getTimeList = [];
+        var xList = [];
+        var dataList = [];
+        
+        function getMinute(data) {
+            var TimeList = data.split(':');
+            var getTimeMinute = parseInt(TimeList[0] * 60) + parseInt(TimeList[1]);
+            return getTimeMinute;
+        }
+        addRange.addEventListener('click', () => {
+            var getIntervalData = $('#cutInterval').val();
+            if (getIntervalData == "") {
+                alert('請輸入區間')
+            } else {
+                $('#end-time').prop('readonly', true);
+                $('#start-time').prop('readonly', true);
+                $('#cutInterval').prop('readonly', true);
+                var getStartTime = startTimeInput.value;
+                var getEndTime = endTimeInput.value;
+                var getCutInterval = $('#cutInterval').val();
+                var startTime = getMinute(getStartTime);
+                var endTime = getMinute(getEndTime)
+                var rangeTime = endTime - startTime;
+                getTimeList.push(getStartTime);
+
+                for (var i = 1; i < (rangeTime / 30) + 1; i++) {
+                    var countM = getMinute(getTimeList[i - 1]);
+                    var count = countM + 30;
+                    count = Math.floor(count / 60) + ':' + count % 60;
+                    getTimeList.push(count);
+                }
+
+                xList = getTimeList.map((x, index) => {
+                    return { x: x, y: 0 };
+                });
+                console.log(xList);
+
+            }
+
+
+        });
+        
+        const myChart = new Chart(canvas, {
+            type: 'line',
+            data: {
+                labels:[],
+                datasets: [],
+            },
+            options: {
+                tooltips: {
+                    mode: 'x',
+                    intersect: false,
+                },
+                ticks: {
+                        maxTicksLimit: 5,
+                            callback: function (value, index, values) {
+                                if (index === values.length - 1) {
+                                    // 如果是最后一个标签，则返回该标签
+                                    return value;
+                                } else {
+                                    // 否则返回一个空字符串以隐藏标签
+                                    return '';
+                                }
+                            },
+             
+                }
+            },
+        });
+
+        function getRandomColor() {
+            const r = Math.floor(Math.random() * 255);
+            const g = Math.floor(Math.random() * 255);
+            const b = Math.floor(Math.random() * 255);
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+
+        addButton.addEventListener('click', () => {
+            var start = startTimeInput.value;
+            var end = endTimeInput.value;
+            var getDate = $('#getDate').val();
+            // console.log(start, end);
+            const startTime1 = new Date(`${getDate}T${start}:00Z`);
+            const endTime1 = new Date(`${getDate}T${end}:00Z`);
+            var getCutInterval = parseInt($('#cutInterval').val());
+            // var startTime = getMinute(start);
+            // var endTime = getMinute(end);
+            var startTime = Date.parse(startTime1);
+            var endTime =  Date.parse(endTime1);
+            var rangeTime = endTime - startTime;            
+            var labels = [];
+            var data = [];
+            var timesList=[]
+            labels[0] = start;
+            // for (var i = 1; i <= (rangeTime / getCutInterval); i++) {
+            //     var countM = getMinute(labels[i - 1]);
+            //     var count = countM + getCutInterval;
+            //     count = Math.floor(count / 60) + ':' + count % 60;
+            //     labels.push(count);
+            // }
+            for (var i = 0; i <= (rangeTime / getCutInterval); i++) {
+                data.push(Math.floor(Math.random() * 100));
+            }
+
+            // dataList = labels.map((x, index) => {
+            //     return { x: x, y: data[index] };
+            // });
+
+            
+            console.log(dataList)
+            console.log(start,end)
+
+            const color = getRandomColor();
+            const dataset = {
+                label: getDate,
+                data: dataList,
+                borderColor: color,
+                backgroundColor: color,
+                fill: false
+            };
+            myChart.data.datasets.push(dataset);
+
+            myChart.update();
+        });
+
+        clearButton.addEventListener('click', () => {
+            myChart.data.datasets = [];
+            myChart.update();
+        });
+
+    </script>
+</body>
+
+</html>

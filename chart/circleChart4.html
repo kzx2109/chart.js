@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+
+<body>
+    <div style="width: 300px;height: 300px;">
+        <canvas id="myChart" width="20" height="20"></canvas>
+    </div>
+
+    <script>
+        var getData = 80
+        $(function () {
+            createChart()
+        })
+        function createChart() {
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Red', 'Blue', 'Yellow'],
+                    datasets: [{
+                        data: [12, 19, 3],
+                        backgroundColor: ['#ff6384', '#36a2eb', '#ffce56']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        doughnutlabel: {
+                            labels: [{
+                                text: 'Total',
+                                font: {
+                                    size: 20
+                                }
+                            }]
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            top: 50,
+                            bottom: 50
+                        }
+                    },
+                    cutoutPercentage: 70
+                },
+                plugins: [{
+                    beforeDraw: function (chart) {
+                        var width = chart.chart.width,
+                            height = chart.chart.height,
+                            ctx = chart.chart.ctx;
+
+                        ctx.restore();
+                        var fontSize = (Math.min(width, height) / 4).toFixed(2);
+                        ctx.font = fontSize + "px Arial";
+                        ctx.textBaseline = "middle";
+                        ctx.fillStyle = '#000';
+                        var text = "Center Text";
+                        var textX = Math.round((width - ctx.measureText(text).width) / 2);
+                        var textY = height / 2;
+                        ctx.fillText(text, textX, textY);
+                        ctx.save();
+                    }
+                }]
+            });
+        }
+        function chartDataSet() {
+            var color = getRandomColor()
+
+        }
+        function getRandomColor() {
+            const r = Math.floor(Math.random() * 255);
+            const g = Math.floor(Math.random() * 255);
+            const b = Math.floor(Math.random() * 255);
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+    </script>
+</body>
+
+</html>

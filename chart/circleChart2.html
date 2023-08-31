@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div style="height: 400px; width: 400px;">
+        <canvas id="myChart"></canvas>
+    </div>
+    
+    <script>
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Red', 'Blue'],
+                datasets: [{
+                    label: '# of Votes',
+                    data: [90, 10],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(54, 162, 235, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                cutout: '60%', // 設置半徑，以顯示出內部留白
+                rotation: -0.5 * Math.PI, // 設置旋轉角度，以使圖形開始繪製的位置位於正上方
+                circumference: Math.PI, // 設置圓弧角度，以繪製半圓形圖
+                plugins: {
+                    legend: {
+                        display: false // 隱藏圖例
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

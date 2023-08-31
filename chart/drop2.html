@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="//code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <button id="add-square-btn">新增方形區域</button>
+    <div id="sortable-container">
+        <div class="square" id="square-1">區域1</div>
+        <div class="square" id="square-2">區域2</div>
+        <div class="square" id="square-3">區域3</div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            // 當文件準備好時
+            var counter = 3; // 計數器用於創建唯一的ID
+            $("#add-square-btn").click(function () {
+                // 當按鈕被點擊時
+                counter++; // 每次新增區域時，計數器加1
+                var squareId = "square-" + counter; // 創建唯一的ID
+                $("<div>")
+                    .attr("id", squareId)
+                    .addClass("square")
+                    .text("新區域")
+                    .appendTo("#sortable-container")
+                    .draggable()
+                    .resizable(); // 創建一個方形區域，綁定唯一的ID，並使其可拖動和調整大小
+            });
+
+            $("#sortable-container").sortable({
+                connectWith: "#sortable-container",
+                // 將所有Sortable連接到同一個容器中，以便它們可以排序和連接
+            }).disableSelection(); // 禁止選擇Sortable中的文本內容
+        });
+    </script>
+</body>
+
+</html>

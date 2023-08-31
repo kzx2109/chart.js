@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Line Chart with Chart.js</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.2/dist/chart.min.js"></script>
+</head>
+<body>
+    <canvas id="myChart"></canvas>
+    <br>
+    <label>Start Date and Time: </label>
+    <input type="datetime-local" id="startDateTime">
+    <br>
+    <label>End Date and Time: </label>
+    <input type="datetime-local" id="endDateTime">
+    <br>
+    <label>Color: </label>
+    <input type="color" id="lineColor">
+    <br>
+    <button onclick="addLine()">Add Line</button>
+    <button onclick="clearChart()">Clear Chart</button>
+    <br>
+    <label>X-axis Interval (in minutes): </label>
+    <input type="number" id="interval" value="1" min="1">
+    <button onclick="updateInterval()">Update Interval</button>
+
+    <script>
+        var chartData = {
+            labels: [],
+            datasets: []
+        };
+        var options = {
+            scales: {
+                x: {
+                    type: 'linear',
+                    ticks: {
+                        stepSize: 60,
+                        callback: function(value, index, values) {
+                            var minutes = Math.floor(value / 60);
+                            var hours = Math.floor(minutes / 60);
+                            minutes = minutes % 60;
+                            if (minutes < 10) {
+                                minutes = "0" + minutes;
+                            }
+                            if (hours < 10) {
+                                hours = "0" + hours;
+                            }
+                            return hours + ":" + minutes;
+                        }
+                    }
+                }
+            }
+        };
+        var myChart = new Chart(document.getElementById('myChart').getContext('2d'), {
+            type: 'line',
+            data: chartData,
+            options: options
+        });
+
+        function generateData(startDate, endDate) {
+            var data = [];
+            var currentDate = new Date(startDate);
+            while (currentDate <= endDate) {
+                data.push(Math.floor(Math.random() * 101));
+                currentDate.setMinutes(currentDate.getMinutes() + 1);
+            }
+            return data;
+        }
+
+        function addLine() {
+            var startDateTime = new Date(document.getElementById('startDateTime').value);
+            var endDateTime = new Date(document.getElementById('endDateTime').value);
+            var lineColor = document.getElementById('lineColor').value;
+            var label = startDateTime.toLocaleString() + ' - ' + endDateTime.toLocaleString();
+            var data = generateData(startDateTime, endDateTime);
+            var dataset = {
+                label: label,
+                data: data,
+                borderColor: lineColor,
+                fill: false
+            };
+            chartData.datasets.push(dataset);
+            myChart.update();
+        }
+
+        function clearChart() {
+            chartData.datasets = [];
+            myChart.update();
+        }
+
+        function updateInterval() {
+            var interval = document.getElementById('interval').value;
+            myChart.options.scales.x.ticks.stepSize = interval * 60;
+            myChart.update();
+        }
+    </script>
+</body>
+</html>

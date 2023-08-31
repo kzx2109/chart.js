@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+</head>
+
+<body>
+    <div>
+        <input type="text" id="getData">
+    </div>
+    <button id="clickbtn" onclick="chartDataSet()">設定</button>
+    <div>
+        <div style="width: 500px; height: 500px;">
+            <canvas id="myChart" width="20" height="20"></canvas>
+
+        </div>
+        <input type="text" id="getAvail">
+    </div>
+
+
+    <script>
+        var myChart;
+        $(function () {
+            createChart();
+            // chartDataSet();
+        })
+        function createChart() {
+            var ctx = document.getElementById('myChart').getContext('2d');
+            myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: [],
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '80%',//甜甜圈寬度
+                    cutoutPercentage: 50, // 設定為 50% 的 cutout
+                    rotation: 86 * Math.PI, // 設定旋轉角度
+                    circumference: 57 * Math.PI, // 設定圓周長度
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            // display: false
+                        },
+                    }
+                }
+            });
+        }
+        var draw = Chart.controllers.doughnut.prototype.draw;
+        Chart.controllers.doughnut = Chart.controllers.doughnut.extend({
+            draw: function () {
+                draw.apply(this, arguments);
+                let ctx = this.chart.chart.ctx;
+                let _fill = ctx.fill;
+                ctx.fill = function () {
+                    ctx.save();
+                    ctx.shadowColor = 'blue';
+                    ctx.shadowBlur = 25;
+                    ctx.shadowOffsetX = 2;
+                    ctx.shadowOffsetY = 2;
+                    _fill.apply(this, arguments)
+                    ctx.restore();
+                }
+            }
+        });
+        function chartDataSet() {
+            var getLabelLsit = ['1', '2']
+            var getDataRange = parseInt($('#getData').val());
+            var getOtherData = 100 - getDataRange
+            var getDataList = [getDataRange, getOtherData]
+            $('#getAvail').val(getDataRange)
+
+            var dataset = {
+                data: getDataList,
+                backgroundColor: ['rgba(255, 99, 132, 0.2)', 'rgba(54, 162, 235, 0.2)']
+            }
+            // myChart.data.labels.push(getDataRange, getOtherData);
+            myChart.data.datasets.push(dataset);
+
+
+            myChart.update();
+        }
+
+        function getRandomColor() {
+            const r = Math.floor(Math.random() * 255);
+            const g = Math.floor(Math.random() * 255);
+            const b = Math.floor(Math.random() * 255);
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+    </script>
+</body>
+
+</html>

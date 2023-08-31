@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Line Chart Example</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div>
+      <label>起始日期:</label>
+      <input type="date" id="start-date" />
+      <label>結束日期:</label>
+      <input type="date" id="end-date" />
+      <button onclick="addLine()">新增線條</button>
+      <button onclick="clearChart()">清除所有線條</button>
+    </div>
+    <div>
+      <label>X軸區間(分鐘):</label>
+      <input type="number" id="interval" value="1" min="1" max="60" />
+      <button onclick="setInterval()">設定區間</button>
+    </div>
+    <canvas id="myChart"></canvas>
+    <script>
+      var ctx = document.getElementById("myChart").getContext("2d");
+      var chartData = {
+        labels: [[1,2,3]],
+        datasets: [],
+      };
+      var chartOptions = {
+        scales: {
+          x: {
+            type: "linear",
+            // ticks: {
+            //   callback: function (value) {
+            //     var date = new Date(chartData.labels[value]);
+            //     var hours = date.getHours().toString().padStart(2, "0");
+            //     var minutes = date.getMinutes().toString().padStart(2, "0");
+            //     return hours + ":" + minutes;
+            //   },
+            // },
+          },
+        },
+      };
+      var myChart = new Chart(ctx, {
+        type: "line",
+        data: chartData,
+        options: chartOptions,
+      });
+
+      function addLine() {
+        var startDate = new Date(document.getElementById("start-date").value);
+        var endDate = new Date(document.getElementById("end-date").value);
+        var data = [];
+        for (var i = startDate.getTime(); i <= endDate.getTime(); i += 86400000) {
+          var date = new Date(i);
+          var value = Math.floor(Math.random() * 100);
+          data.push({ x: date.getTime(), y: value });
+        }
+        var color = "hsl(" + Math.random() * 360 + ", 100%, 50%)";
+        var dataset = {
+          label: startDate.toLocaleDateString() + " - " + endDate.toLocaleDateString(),
+          data: data,
+          borderColor: color,
+          backgroundColor: color,
+          fill: false,
+        };
+        chartData.datasets.push(dataset);
+        myChart.update();
+      }
+
+      function clearChart() {
+        chartData.datasets = [];
+        myChart.update();
+      }
+
+      function setInterval() {
+        var interval = document.getElementById("interval").value;
+        chartOptions.scales.x.time = {
+          unit: "minute",
+          stepSize: interval,
+        };
+        myChart.update();
+      }
+    </script>
+  </body>
+</html>

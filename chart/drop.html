@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Sortable List Example</title>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="//code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+  <style>
+    #arealist,
+    #area2,
+    #area3 {
+      border: 1px solid #ccc;
+      width: 200px;
+      height: 200px;
+      margin: 10px;
+      padding: 10px;
+      float: left;
+    }
+    .area{
+      border: 1px solid #ccc;
+      width: 200px;
+      height: 200px;
+      margin: 10px;
+      padding: 10px;
+      float: left
+    }
+
+    .item {
+      border: 1px solid #ccc;
+      background-color: #f7f7f7;
+      padding: 5px;
+      margin: 5px;
+      cursor: move;
+    }
+
+    .item:hover {
+      background-color: #eee;
+    }
+
+    .cross {
+      float: right;
+      cursor: pointer;
+    }
+
+    .creat-space {
+      display: flex;
+      flex-direction: column;
+      width: fit-content;
+    }
+  </style>
+  <script>
+    $(document).ready(function () {
+      // sortable list
+      $('#arealist, #area2, #area3').sortable({
+        connectWith: '.connectedSortable', 
+        helper: 'clone',//可以被拖移
+        stop: function (event, ui) {
+          if ($(ui.item).hasClass('item')) {
+            // create a clone when moved to another area
+            $(this).append(ui.item.clone());
+          }
+        }
+      }).disableSelection();
+    });
+  </script>
+</head>
+
+<body>
+  <div id="arealist" class="connectedSortable">
+    <div class="item">Item 1</div>
+    <div class="item">Item 2</div>
+    <div class="item">Item 3</div>
+    <div class="item">Item 4</div>
+    <div class="item">Item 5</div>
+    <div class="item">Item 6</div>
+    <div class="item">Item 7</div>
+    <div class="item">Item 8</div>
+    <div class="item">Item 9</div>
+    <div class="item">Item 10</div>
+  </div>
+  <div class="creat-space">
+    <div id="area2" class="connectedSortable">
+      <div>111</div>
+      <div>111</div>
+    </div>
+    <!-- <div id="area3" class="connectedSortable"></div> -->
+    <button id="addArea">新增</button>
+  </div>
+  
+<script>
+
+</script>
+
+</body> 
+
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sortable List Example</title>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="//code.jquery.com/ui/1.13.1/jquery-ui.min.js"></script>
+    <style>
+        .connectedSortable {
+            border: 1px solid #ccc;
+            width: 200px;
+            height: 100%;
+            margin: 10px;
+            padding: 10px;
+            float: left;
+        }
+
+        .area {
+            border: 1px solid #ccc;
+            width: 200px;
+            height: 200px;
+            margin: 10px;
+            padding: 10px;
+            float: left
+        }
+
+        .item {
+            border: 1px solid #ccc;
+            background-color: #f7f7f7;
+            padding: 5px;
+            margin: 5px;
+            cursor: move;
+        }
+
+        .item:hover {
+            background-color: #eee;
+        }
+
+        .cross {
+            float: right;
+            cursor: pointer;
+        }
+
+        .putItemsquare {
+            border: 1px solid #ccc;
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            padding: 10px;
+            float: left
+        }
+
+        /* .creat-space {
+            display: flex;
+            flex-direction: column;
+            width: fit-content;
+        } */
+    </style>
+
+</head>
+
+<body>
+    <div id="arealist" class="connectedSortable">
+        <div class="item">Item 1</div>
+        <div class="item">Item 2</div>
+        <div class="item">Item 3</div>
+        <div class="item">Item 4</div>
+        <div class="item">Item 5</div>
+        <div class="item">Item 6</div>
+        <div class="item">Item 7</div>
+        <div class="item">Item 8</div>
+        <div class="item">Item 9</div>
+        <div class="item">Item 10</div>
+
+    </div>
+    <div id="squareSpace" class="creat-space">
+        <div class="connectedSortable" id="square1"></div>
+        <button id="addArea" onclick="clickAddBtn()">新增</button>
+    </div>
+    <script>
+        var counter = 1;
+        $(function () {
+            createList();
+            moveSortable();
+        });
+        function moveSortable() {
+            // sortable list
+            $('.connectedSortable').sortable({
+                connectWith: '.connectedSortable',
+                helper: 'clone',//可以被拖移
+                stop: function (event, ui) {
+                    if ($(ui.item).hasClass('item')) {
+                        // create a clone when moved to another area
+                        $(this).append(ui.item.clone());
+                    }
+                }
+            }).disableSelection();
+
+        }
+
+        function clickAddBtn() {
+            counter = counter + 1; // 每次新增區域時，計數器加1
+            console.log(counter);
+            var squareId = "square" + counter; // 創建唯一的ID
+            $("<div>")
+                .attr("id", squareId)
+                .addClass("connectedSortable")
+                .appendTo(".creat-space");
+            var newDiv = $("<div></div>");
+
+            // $("#"+squareId).append(newDiv).addClass("putItemsquare");
+            $('#addArea').last().appendTo('#squareSpace');
+            putItem();
+        }
+        function putItem() {
+            $('.connectedSortable').sortable({
+                connectWith: '.connectedSortable',
+                helper: 'clone',//可以被拖移
+                stop: function (event, ui) {
+                    if ($(ui.item).hasClass('item')) {
+                        // create a clone when moved to another area
+                        $(this).append(ui.item.clone());
+                        $(this).append();
+                    }
+                }
+            }).disableSelection();
+        }
+        function createList() {
+            var numDivs = 5; // 設置要創建的 div 數量
+            for (var i = 1; i <= numDivs; i++) {
+                var $newDiv = $('<div></div>'); // 創建新的 div 元素
+                $newDiv.attr('id', 'div' + i); // 設置 id 屬性
+                $('#arealist').append($newDiv); // 將元素添加到容器中
+            }
+        }
+        //判斷元素
+
+    </script>
+</body>
+
+</html>
+
+
+
+<!--  -->

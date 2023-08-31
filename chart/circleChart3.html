@@ -1,0 +1,62 @@
+<!-- 引入 Chart.js 库 -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- 引入 Chart.js Annotation 插件 -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+
+<!-- 在 HTML 中创建一个半圆形的 canvas 元素 -->
+<canvas id="myChart" width="400" height="200"></canvas>
+
+<script>
+  // 获取半圆形的 canvas 元素
+  var ctx = document.getElementById('myChart').getContext('2d');
+
+  // 定义数据
+  var data = {
+    datasets: [{
+
+      data: [20, 30, 50],
+      backgroundColor: [
+        '#ff6384',
+        '#36a2eb',
+        '#ffce56'
+      ]
+    }]
+  };
+
+  // 定义选项
+  var options = {
+    rotation: 86* Math.PI, // 設定旋轉角度為 -0.5π
+    circumference: 57 * Math.PI,
+    legend: {
+      display: false
+    },
+    tooltips: {
+      enabled: false
+    },
+    plugins: {
+      annotation: {
+        annotations: [{
+          type: 'line',
+          mode: 'horizontal',
+          scaleID: 'y-axis-0',
+          value: 100,
+          borderColor: 'gray',
+          borderWidth: 2,
+          label: {
+            backgroundColor: 'gray',
+            content: '10',
+            enabled: true
+          }
+        }]
+      }
+    }
+  };
+
+  // 创建半圆形的圆饼图
+  var myChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: data,
+    options: options
+  });
+</script>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <title>Document</title>
+</head>
+
+<body>
+    <div>
+        <!-- <input type="text" id="datepicker" value="10/24/1984" /> -->
+    </div>
+    <div>
+        <canvas id="areaChart"></canvas>
+    </div>
+    <script>
+        var areaChart
+        $(function () {
+            createChart();
+            // createChart()
+            // datepicket();
+            renderChartData()
+        })
+        function cb(start, end) {
+            $('#datepicker').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+        }
+        $('#datepicker').on('apply.daterangepicker', function (ev, picker) {
+            console.log(picker.startDate.format('YYYY-MM-DD'));
+            console.log(picker.endDate.format('YYYY-MM-DD'));
+        });
+        function datepicket() {
+            var start = moment().subtract(29, 'days');
+            var end = moment();
+            $('#datepicker').daterangepicker({
+                startDate: start,
+                endDate: end,
+                ranges: {
+                    // 'Today': [moment(), moment()],
+                    // 'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                }
+            }, cb);
+
+            cb(start, end);
+
+
+
+        }
+        function createChart() {
+            var ctx = document.getElementById('areaChart').getContext('2d');
+            areaChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    // X 軸的標籤
+                    // datasets: [
+                    //     {
+                    //         label: 'Dataset 1',
+                    //         data: [10, 20, 30, 10, 20, 30], // Y 軸的數據
+                    //         backgroundColor: 'rgba(255, 99, 132, 0.2)', // 區域圖的填充顏色
+                    //         borderColor: 'rgba(255, 99, 132, 1)', // 區域圖的邊框顏色
+                    //         borderWidth: 1, // 區域圖的邊框寬度
+                    //         fill: 'origin',
+                    //         tension: 0.4
+                    //     },
+                    //     // 可以添加更多的數據集
+                    // ],
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            // stepSize: 2,
+                            ticks: {
+                                maxTicksLimit: 3,
+                                maxRotation: 0, // 禁用刻度标签旋转
+                                autoSkip: false, // 禁用自动跳过刻度标签
+                                // maxTicksLimit: 5 // 最多显示5个刻度
+                                // callback: function (value, index, values) {
+                                //     if (index === values.length - 1) {
+                                //         // 如果是最后一个标签，则返回该标签
+                                //         return this.getLabelForValue(value);
+                                //     } else {
+                                //         // 否则返回一个空字符串以隐藏标签
+                                //         // if (values.length % 2 == 0) {
+                                //         //     return index % (values.length / 2) === 0 ? this.getLabelForValue(value) : '';
+                                //         // } else {
+                                //         //     return index % ((values.length + 1) / 2) === 0 ? this.getLabelForValue(value) : '';
+                                //         // }
+
+                                //     }
+                                // }
+                                // color: 'red',
+                            },
+
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'km/hr'
+                            },
+
+                        }
+                    }, 
+                    plugins: {
+                        subtitle: {
+                            display: true,
+                            text: 'Custom Chart Subtitle'
+                        }
+                    }
+
+                }
+            });
+        }
+        // function renderChartData() {
+        //     var lableList = ['1/15', '3/5', '4/20', '8/27', '9/21', '10/21']
+        //     var dataset1 = {
+        //         type: 'line',
+        //         label: ["車流"],
+        //         data: [{ x: '1/15', y: 0 },
+        //         { x: '2/24', y: 0 },
+        //         { x: '4/20', y: 0 },
+        //         { x: '8/27', y: 0 },
+        //         { x: '9/21', y: 0 },
+        //         { x: '10/21', y: 0 }],
+        //         borderColor: 'rgba(0, 0,0, 0.3)',
+        //         backgroundColor: 'rgba(0,0,0, 0.1)',
+        //         fill: false,
+        //         tension: 0.4
+        //     };
+        //     var dataset2 = {
+        //         type: 'bar',
+        //         label: ["車輛"],
+        //         data: [{ x: '1/15', y: 0 },
+        //         { x: '2/24', y: 0 },
+        //         { x: '4/20', y: 0 },
+        //         { x: '8/27', y: 0 },
+        //         { x: '9/21', y: 0 },
+        //         { x: '10/21', y: 1 }],
+        //         borderColor: 'rgba(0, 0,0, 0.3)',
+        //         backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        //         fill: false,
+        //         tension: 0.4
+        //     };
+        //     // var dataset3 = {
+        //     //     type: 'bar',
+        //     //     label: ["車輛"],
+        //     //     data: [{ x: '1/15', y: 10 },
+        //     //     { x: '2/24', y: 30 },
+        //     //     { x: '4/20', y: 10 },
+        //     //     { x: '8/27', y: 70 },
+        //     //     { x: '9/21', y: 80 },
+        //     //     { x: '10/21', y: 10 }],
+        //     //     borderColor: 'rgba(0, 0,0, 0.3)',
+        //     //     backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        //     //     fill: false,
+        //     //     tension: 0.4
+        //     // };
+
+        //     areaChart.data.datasets.push(dataset1);
+        //     areaChart.data.datasets.push(dataset2);
+        //     // areaChart.data.datasets.push(dataset3);
+        //     areaChart.update();
+        // }
+
+    </script>
+</body>
+
+</html>

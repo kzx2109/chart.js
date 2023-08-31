@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Line Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+</head>
+<body>
+    <div>
+        <label for="startDate">Start Date:</label>
+        <input type="datetime-local" id="startDate">
+    </div>
+    <div>
+        <label for="endDate">End Date:</label>
+        <input type="datetime-local" id="endDate">
+    </div>
+    <div>
+        <label for="interval">X-axis Interval (minutes):</label>
+        <input type="number" id="interval" min="1" max="1440" value="60">
+    </div>
+    <button id="addLine">Add Line</button>
+    <button id="clear">Clear All</button>
+    <canvas id="myChart"></canvas>
+    <script>
+        const chartData = {
+            labels: [],
+            datasets: []
+        };
+
+        const chartOptions = {
+            responsive: true,
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'minute',
+                        displayFormats: {
+                            minute: 'HH:mm'
+                        }
+                    },
+                    ticks: {
+                        source: 'labels',
+                        autoSkip: true,
+                        maxRotation: 0,
+                        sampleSize: 10
+                    }
+                }
+            }
+        };
+
+        const chart = new Chart('myChart', {
+            type: 'line',
+            data: chartData,
+            options: chartOptions
+        });
+
+        const addLineBtn = document.getElementById('addLine');
+        addLineBtn.addEventListener('click', () => {
+            const startDate = new Date(document.getElementById('startDate').value);
+            const endDate = new Date(document.getElementById('endDate').value);
+            const interval = document.getElementById('interval').value;
+            const color = getRandomColor();
+
+            const lineData = {
+                label: `Line ${chartData.datasets.length + 1}`,
+                data: generateData(startDate, endDate, interval),
+                borderColor: color,
+                backgroundColor: color,
+                fill: false
+            };
+
+            chartData.datasets.push(lineData);
+            chart.update();
+        });
+
+        const clearBtn = document.getElementById('clear');
+        clearBtn.addEventListener('click', () => {
+            chartData.datasets = [];
+            chartData.labels = [];
+            chart.update();
+        });
+
+        function generateData(startDate, endDate, interval) {
+            const data = [];
+            let currentDate = new Date(startDate);
+
+            while (currentDate < endDate) {
+                data.push({
+                    x: currentDate,
+                    y: Math.floor(Math.random() * 100)
+                });
+                currentDate = new Date(currentDate.getTime() + (interval * 60 * 1000));
+            }
+
+            return data;
+        }
+
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+
+            return color;
+        }
+    </script>
+</body>
+</html>
